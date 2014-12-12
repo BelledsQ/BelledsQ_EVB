@@ -1,0 +1,48 @@
+#!/bin/sh
+
+usage() {
+	cat <<EOF
+Usage: $0 [lan|wan]
+switch Wired Interface to LAN(default) or WAN.
+EOF
+	exit 1
+}
+
+switch_lan() {
+	echo 1 > /sys/class/leds/greenled/brightness
+	uci del network.wan2
+	uci del network.lan._orig_bridge
+	uci del network.lan._orig_ifname
+	uci set network.lan.ifname=eth0
+	uci set network.lan.status=lan
+	uci commit network
+	/etc/init.d/network restart
+	echo 0 > /sys/class/leds/greenled/brightness
+}
+
+switch_wan() {
+	echo 1 > /sys/class/leds/buleled/brightness
+	uci del network.lan.ifname
+	uci set network.lan.status=wan
+	uci set network.lan._orig_bridge="true"
+	uci set network.lan._orig_ifname="wlan0"
+	uci set network.wan2=interface
+	uci set network.wan2.proto=dhcp
+	uci set network.wan2.ifname=eth0
+	uci commit network
+	/etc/init.d/network restart
+	echo 0 > /sys/class/leds/buleled/brightness
+}
+
+[ -z "$1" ] && {
+	. /lib/config/uci.sh
+	state=$(uci_get network.lan.status)
+	[ $state == "lan"  ] && switch_wan
+	[ $state == "wan"  ] && switch_lan
+}
+
+case "$1" in                                                        
+	lan) switch_lan ;;                                   
+	wan) switch_wan ;; 
+	--help|help) usage;;   
+esac

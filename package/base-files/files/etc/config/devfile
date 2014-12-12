@@ -1,0 +1,9 @@
+config devCount 'dev'
+        option count '0'
+config devCount 'group'
+	option count '1'
+config groupMgnt                 
+        option group_title 'music'
+        option description 'sync with music'
+        option status '0'    
+        option group_id '218' 

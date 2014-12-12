@@ -1,0 +1,193 @@
+﻿<meta name="viewport" content="width=device-width, maximum-scale=1.0">
+﻿<html>
+<head>
+    <title>STM&ART upgrade</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/css/a.css">
+    <meta http-equiv=”pragma” content=”no-cache”>
+    <meta http-equiv=”expires” content=”-1″>
+</head>
+<style type="text/css"> 
+.spa{ 
+font-size:20px; 
+color:#10b0ff; 
+} 
+.put{ 
+font-size:20px; 
+font-family:Arial; 
+color:#10b0ff; 
+background-color:#6f6f6f; 
+padding:0px; 
+border-style:none; 
+} 
+.put2{ 
+font-size:20px; 
+color:#10b0ff; 
+text-align:center; 
+border-width:medium; 
+border-style:none; 
+} 
+.btn2{display:inline-block;height:45px;line-height:45px;width:280px;color:#515151;font-size:20px;text-decoration:none;font-weight:bold;cursor:pointer;text-align:center;}
+</style> 
+<script type="text/javascript" src="js/langPrefix.js"></script>
+<script language="JavaScript" type="text/javascript">
+	var lap=5;
+    function DisplayWait()
+    {
+
+	//divInput0.style.display = 'block';
+      //document.getElementById('kwait2').value= "Rebooting ... "+lap+" s";
+      lap = lap - 1;
+      if (lap <= 0){
+	  alert("升级成功后，系统会自动关机，需要您手动开机！！！");
+    //  window.location.replace("wait.shtml?parent=a_stm");
+      }
+      else
+        setTimeout("DoWait()",800);
+    }
+
+    function DoWait()
+    {
+       DisplayWait();
+    }
+
+var bar=0; 
+var line="////////"; 
+var amount=""; 
+function count(){ 
+
+	divContent.style.display = 'none';
+	document.getElementById("up").style.display="inline"; 
+	bar = bar+40; 
+	amount = amount+line; 
+	document.getElementById("chart").value=amount; 
+	document.getElementById("percent").value=bar+"%"; 
+	if(bar<99){ 
+	setTimeout("count()",800); 
+	}else{ 
+//	alert("Please wait while rebooting !"); 
+	document.getElementById("up").style.display="none"; 
+	// window.location=""; 
+	} 
+} 
+function init() {
+	document.getElementById("btn6").value="升级STM";//eval('message.en.upgrade');
+	document.getElementById("btn7").value="升级ART";//eval('message.en.upgrade');
+	document.getElementById("btn8").value="升级Boot";//eval('message.en.upgrade');
+	document.getElementById("notice").innerHTML="注意：确保电量充足！升级中勿断电！";//eval('message.zh.notice');
+	document.getElementById("kwait").innerHTML=eval('message.zh.wait');
+	document.getElementById("kwait2").value=eval('message.zh.wait');
+	
+    divInput0= document.getElementById('DivInput0');
+    divInput0.style.display = 'none';
+divUp=document.getElementById('up');
+    divUp.style.display = 'none';
+	divContent=document.getElementById('div_content');
+
+}
+
+function sendClicked(form,val)
+{
+	if(val=='a')
+	{
+	//var format=document.upload.binary.value.substring(document.upload.binary.value.lastIndexOf(".")+1);
+	  if(document.upload.binary.value == ""){
+		alert('File name can not be empty !');
+		return false;
+	  }
+
+	  Uploadform=document.getElementById("upload");
+	  Uploadform.submit();
+  }else if(val=="b")
+  {
+   if(document.upload2.binary.value == ""){
+
+		alert('File name can not be empty !');
+		return false;
+	  }
+
+	  Uploadform=document.getElementById("upload2");
+	  Uploadform.submit();
+  }else
+  {
+   if(document.upload3.binary.value == ""){
+		alert('File name can not be empty !');
+		return false;
+	  }
+//	  count();	
+//	  DoWait();
+	  Uploadform=document.getElementById("upload3");
+	  Uploadform.submit();  
+  }
+
+  return true;
+}
+</script>
+
+<body onLoad="init();">
+<div class="div_content" id="div_content">
+<div class="div_header2">
+<h3>非专业人员，谨慎操作！</h3>
+</div>
+
+<div class="image_middleN10">
+<form method="post" action="/cgi-bin/StmUpgrade" id="upload" enctype="multipart/form-data" name="upload">
+<p>
+<table align="center">
+  <tr>
+      <td width="100%"><input type="file" id="f" name="binary" size=20 ></td>
+  </tr>
+</table> 
+</p>
+<p>
+<a style="cursor: pointer" onClick="sendClicked(this.form,'a');"><input  class="btn2" id="btn6" type="button" value="" /></a>
+</p>
+</form>
+<form method="post" action="/cgi-bin/ArtUpgrade" id="upload2" enctype="multipart/form-data" name="upload2">
+<p>
+<table align="center">
+  <tr>
+      <td width="100%"><input type="file" id="f2" name="binary" size=20 ></td>
+  </tr>
+</table> 
+</p>
+<p>
+<a style="cursor: pointer" onClick="sendClicked(this.form,'b');"><input  class="btn2" id="btn7" type="button" value="" /></a>
+</p>
+
+</form>
+<form method="post" action="/cgi-bin/BootUpgrade" id="upload3" enctype="multipart/form-data" name="upload3">
+<p>
+<table align="center">
+  <tr>
+      <td width="100%"><input type="file" id="f3" name="binary" size=20 ></td>
+  </tr>
+</table> 
+</p>
+<p>
+<a style="cursor: pointer" onClick="sendClicked(this.form,'c');"><input  class="btn2" id="btn8" type="button" value="" /></a>
+</p>
+
+</form>
+<p><font id="notice" color="#000000">Notice: </font></p>
+</div>
+
+</div>
+
+<div id="up"> 
+<span class="spa"><font id="kwait" color="#000000">please wait...</font></span> 
+<input id="chart" type="text" size="54" class="put" readOnly /> 
+<input id="percent" type="text" size="10" class="put2" readOnly /> 
+</div> 
+
+<div id="DivInput0"  align="center">
+<div class="list_left2">
+
+<p><img style="border:0;" src="graphics/Wait.gif" /></p>
+<p><input type="button" id="kwait2" value="Please Wait..." style="height: 50px; width: 90%; font-size:20px; color:#10b0ff;background-color:#2e2e2e;border:0;" onClick="" /></p>
+
+</div>
+</div>
+
+</body>
+</html>

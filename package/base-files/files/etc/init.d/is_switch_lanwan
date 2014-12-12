@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=50
+
+start() {
+	MODE=$(/usr/sbin/fts is_usrmode)
+
+	if [ $MODE == "factory_mode" ]; then
+		. /lib/config/uci.sh
+		LAN_STATUS=$(uci_get network.lan.status)
+		[ $LAN_STATUS == "wan" ] && /sbin/switch_lan_wan lan
+	fi
+}
+

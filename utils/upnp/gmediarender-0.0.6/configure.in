@@ -1,0 +1,57 @@
+AC_PREREQ(2.59)
+AC_INIT(gmediarender, 0.0.6, http://gmrender.nongnu.org)
+AC_CONFIG_SRCDIR(src/main.c)
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_CONFIG_HEADER(config.h)
+
+AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip check-news])
+
+AC_DEFINE(PACKAGE, AC_PACKAGE_NAME, [package name])
+AC_DEFINE(VERSION, AC_PACKAGE_VERSION, [package version])
+
+AC_SYS_LARGEFILE
+#AC_TYPE_SIZE_T
+#AC_TYPE_OFF_T
+#AC_DEFINE([_LARGE_FILE_SOURCE], [], [Large files support])
+#AC_DEFINE([_FILE_OFFSET_BITS], [64], [File Offset size])
+
+
+# Checks for programs
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+EXTRA_GCC_DEBUG_CFLAGS="" 
+EXTRA_GCC_DEBUG_CXXFLAGS=""
+  
+if test -n "$GCC"; then
+   EXTRA_GCC_DEBUG_CFLAGS="$CFLAGS"
+   EXTRA_GCC_DEBUG_CXXFLAGS="$CXXFLAGS"
+   CFLAGS="-Wall -Wpointer-arith -Wcast-align -Wmissing-prototypes -Wmissing-declarations"
+   CXXFLAGS="-Wall -Wpointer-arith -Wcast-align"
+fi  
+
+
+GST_REQS=0.10.1
+GSTPLUG_REQS=0.10.1
+GST_MAJORMINOR=0.10
+PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQS, HAVE_GSTREAMER=yes, HAVE_GSTREAMER=no)
+
+AC_LIB_UPNP([], [AC_MSG_ERROR([the upnp library is required to build and run this program])])
+
+
+
+# Checks for header files.
+AC_HEADER_STDC
+
+AC_CONFIG_FILES([Makefile
+                 src/Makefile
+		 data/Makefile])
+AC_OUTPUT
+
+dnl Give error and exit if we don't have gstreamer
+if test "x$HAVE_GSTREAMER" = "xno"; then
+  AC_MSG_ERROR(you need the GStreamer development packages installed)
+fi
+

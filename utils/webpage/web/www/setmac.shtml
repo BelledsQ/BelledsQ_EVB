@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function loadXMLDoc()
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("myText").innerHTML=xmlhttp.responseText;
+    }
+  }
+  addr=document.getElementById("myMac").value;
+//  document.getElementById("myText").innerHTML=addr;
+xmlhttp.open("GET","http://192.168.222.254/cgi-bin/set_mac?macaddr="+addr,true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body>
+
+<div id="myDiv" align="center"><h2>Set MAC Address</h2>
+<input type="text" id="myMac" value="845dd7001122"/>
+<button type="button" onclick="loadXMLDoc()">Set</button>
+</div>
+<div id="myDiv2" align="center">
+<textarea id="myText" rows="10" cols="40"/>
+</textarea>
+</div>
+
+</body>
+</html>

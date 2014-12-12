@@ -1,0 +1,31 @@
+#!/bin/sh
+#startmc "$INTERFACE"  "$ip"  "$GW" &
+
+INTERFACE="$1"
+IP="$2"
+GW="$3"
+
+. /lib/config/uci.sh
+bellmc $(fts getsn) $(uci_get_state network wan ipaddr) &
+
+NAME=$(uci_get airplay.unix)
+
+GMEADIA=$(uci_get system.gmediarender.gmediarender_mode)
+rm /usr/sbin/gmediarender
+ln -s /usr/sbin/gmediarender$GMEADIA /usr/sbin/gmediarender
+mkfifo /tmp/mpg123_pipe
+
+/etc/init.d/miniupnpd  restart &&{                                                    
+		[ "$INTERFACE" == "wan"  ] && {
+				kill `cat /tmp/chkwan2`
+				rm -f /tmp/chkwan2
+				sed '1s/^.*$/ext_ifname=wlan0-1/'  -i  /var/etc/miniupnpd.conf
+        }
+
+        [ "$INTERFACE" == "wan2"  ] && sed '1s/^.*$/ext_ifname=eth0/'  -i  /var/etc/miniupnpd.conf && chk_wan2.sh "$GW" &
+        /etc/init.d/miniupnpd  stop                                                   
+        /usr/sbin/miniupnpd -f /var/etc/miniupnpd.conf
+}
+
+killall gmediarender                                                                                                     
+gmediarender  --ip-address "$IP"   --friendly-name $NAME --uuid $NAME &

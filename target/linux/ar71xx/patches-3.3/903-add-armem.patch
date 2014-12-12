@@ -1,0 +1,52 @@
+--- a/drivers/char/mem.c	2014-08-19 14:15:57.387361017 +0800
++++ b/drivers/char/mem.c	2014-08-19 12:33:46.213369714 +0800
+@@ -732,6 +732,28 @@
+ 	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
+ }
+ 
++static ssize_t read_armem(struct file *file, char __user *buf, 
++			 size_t count, loff_t *ppos)
++{
++	unsigned int	pos = (unsigned int)*ppos;
++	if (copy_to_user(buf, (void *)pos, count))
++		return -EFAULT;
++	*ppos += count;
++	return count;
++}
++
++static ssize_t write_armem(struct file * file, const char __user * buf, 
++			  size_t count, loff_t *ppos)
++{
++	unsigned int	pos = (unsigned int)*ppos;
++	if(copy_from_user((void *)pos, buf, count)) {
++		return -EFAULT;
++	}
++	*ppos += count;
++	return count;
++}
++
++#define memory_arlseek memory_lseek
+ #define zero_lseek	null_lseek
+ #define full_lseek      null_lseek
+ #define write_zero	write_null
+@@ -807,6 +829,12 @@
+ };
+ #endif
+ 
++static const struct file_operations armem_fops = {
++	.llseek		= memory_arlseek,
++	.read		= read_armem,
++	.write		= write_armem,
++};
++
+ static ssize_t kmsg_writev(struct kiocb *iocb, const struct iovec *iv,
+ 			   unsigned long count, loff_t pos)
+ {
+@@ -867,6 +895,7 @@
+ #ifdef CONFIG_CRASH_DUMP
+ 	[12] = { "oldmem", 0, &oldmem_fops, NULL },
+ #endif
++	[13] = { "armem",0666, &armem_fops, NULL},
+ };
+ 
+ static int memory_open(struct inode *inode, struct file *filp)

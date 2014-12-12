@@ -1,0 +1,13 @@
+#!/bin/sh
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+. /lib/config/uci.sh
+
+killall -9 gmediarender perl  mpg123
+
+NAME=$(uci_get airplay.unix)
+echo $NAME
+gmediarender  --ip-address 172.16.0.1 --friendly-name $NAME --uuid $NAME &
+shairport.pl -a $NAME -D
+
+exit 0

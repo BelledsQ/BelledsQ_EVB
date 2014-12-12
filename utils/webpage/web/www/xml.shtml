@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=gb2312"> <title>把xml嵌入到html中的方法</title>
+</head>
+<body>
+<xml id="in" style="display:none">
+<in>
+<object>xml</object>
+<deep>嵌入到网页中</deep>
+<conclusion>感觉不错</conclusion>
+</in>
+</xml>
+<center><h1>xml嵌入网页中的方法</h1></center>
+<table border="0" datasrc="#in" align="center" width="443">
+<tr>
+<td bgcolor="#55dd66">object: <span datafld="object"></span></td>
+<td bgcolor="#3399CC">deep: <span datafld="deep"></span></td>
+<td bgcolor="#1155cc">conclusion: <span datafld="conclusion"></span></td>
+</tr>
+</table>
+<div align="center">
+<form name="xml" action="/cgi-bin/SysInfo" method="get">
+<?xml version="1.0" id="get" name="xml" ?>
+	<ssid name="airmusic" encrypt="wpa2" channel="6"></ssid>
+	<apList>
+	<ap name="netcom" rssi="60" encrypt="wpa"></ap>
+	<ap name="netcom2" rssi="70" encrypt="wpa2"></ap>
+	</aplist>
+</xml>
+<input name="data" value=""/>
+<input type="submit" name="feng" value="submit form"/>
+</form>
+</div>
+</body>
+</html>

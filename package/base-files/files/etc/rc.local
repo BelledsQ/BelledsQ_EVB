@@ -1,0 +1,25 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+insmod ar7240_i2s
+mknod /dev/i2s c 253 0
+cp /usr/sbin/mpg123 /tmp/mpg123
+mkfifo /tmp/mpg123_pipe
+
+#rfgateway &
+. /lib/config/uci.sh
+NAME=$(uci_get airplay.unix)
+LAN_IP=$(uci_get network.lan.ipaddr)
+GMEADIA=$(uci_get system.gmediarender.gmediarender_mode)
+rm /usr/sbin/gmediarender
+ln -s /usr/sbin/gmediarender$GMEADIA /usr/sbin/gmediarender
+monitor.sh&
+wan_monitor &
+belledAJ -s $(fts getsn) &
+[ ! -e "/var/run/miniupnpd.pid" ] && {
+	killall gmediarender
+	gmediarender  --ip-address $LAN_IP --friendly-name $NAME --uuid $NAME & 
+}
+echo group:218 > /tmp/musicled
+shairport.pl -a $NAME -D  &
+rcmc -s rcm.belleds.com -m bellnet -n $(fts getsn)&
+exit 0

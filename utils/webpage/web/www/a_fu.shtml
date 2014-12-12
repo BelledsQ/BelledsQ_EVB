@@ -1,0 +1,302 @@
+﻿<meta name="viewport" content="width=device-width, maximum-scale=1.0">
+﻿<html>
+<head>
+    <title>Upgrade Firmware</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/css/a.css">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+<style type="text/css">
+    #file_wrapper {
+    position: relative;
+    width:332px;
+    height:30px;
+    display:inline-block;
+} 
+#file_faker {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    text-align:left;
+    width:100%;
+}
+#file_faker input{
+    width:240px;
+    height:30px;
+    line-height:30px;
+    margin-left:5px;
+    cursor:pointer;
+}
+#file_btn {
+    position:absolute;
+    top:-6px;
+    right:0;
+    width:64px;
+    height:32px;
+    line-height:28px;
+    text-align :center;
+    background:url(/graphics/btn_done.png) no-repeat;
+    color:rgb(226, 108, 29);
+    z-index: 2;
+    font-size:13px;
+    font-family: 微软雅黑;
+    cursor:pointer;
+    padding-top:5px;
+}
+#fileToUpload {
+    position: relative;
+    text-align: left;
+    -moz-opacity:0 ;
+    filter:alpha(opacity: 0);
+    opacity: 0;
+    z-index: 3;
+    width:320px;
+    font-size:24px;
+}
+#bar{
+	background: #fce10a;
+	border:solid 0px #247BE6;
+	color:#F00;font-size:13px;
+	height:30px;line-height:30px;
+	text-align:center;
+	width:0;
+	margin-left:10px;
+}
+</style>    
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/langPrefix.js"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="js/tool.js"></script>
+<script language="JavaScript" type="text/javascript">
+	var c = 0;
+	var i;
+    function count() {
+		var b=document.getElementById("bar");
+		$(".div_container").css("display","none");
+		$("#div_bar").css("display","block");
+		$("#div_warn").css("display","block");
+		if(c>95)
+		{
+			window.clearInterval(i);
+                                $.ajax({
+                                    url:"/cgi-bin/sysupdate?data=reboot",
+                                    date:null,
+                                    dataType:"text",
+                                    success:function(data){window.location.assign("index.shtml");}                            
+                                });
+		}
+		if(c>=95.0){
+			b.innerHTML="100%";//"Upgrade should be ready, please check the router";
+			$("#bar").css("background","#73ABE6");
+			c+=0.1;
+			return;
+		}
+		c+=0.1;
+		if(c>=1)
+			{b.innerHTML=c.toFixed(2)+"%";}
+		b.style.width=c+"%";
+    }
+
+
+    $(function () {
+        //
+        langPrefix();
+        //
+        $id("fileToUpload").onchange = function () {
+            $id("text_box").value = this.value;
+        }
+        //
+        divContent = $id('DivContent');
+    });
+
+
+
+function ajaxFileUpload()
+    {
+        //starting setting some animation when the ajax starts and completes
+        $("#loading")
+        .ajaxStart(function(){
+            alert("nihao");
+            $(this).show();
+        })
+        .ajaxComplete(function(){
+            $(this).hide();
+        });
+        if ($id("text_box").value == ""||$id("text_box").value == null) {
+            $("#fileToUpload").focus();
+            alert(message[currentlang].fileemptyalert);
+            return false;
+        }
+
+		$("#loadingpic").css("display","");
+
+        $.ajaxFileUpload
+        (
+            {
+                url:'/cgi-bin/SysUpgrade', 
+                secureuri:false,
+                fileElementId:'fileToUpload',
+                dataType:'text',
+                success: function (data, status)
+                {
+					$("#loadingpic").css("display","none");
+
+                	if (data=="nidaye")
+                    {
+                        if (confirm(message[currentlang].upload))//"File uploaded success! Continue to upgrade?" 
+                            {
+                            	$.ajax({
+                                    url:"/cgi-bin/sysupdate?data=yes",
+                                    date:null,
+                                    dataType:"text",
+                                    success:function(data){;}                            
+                                });
+                            	i=setInterval('count()',180);
+                            }else {
+								$.ajax({
+									url:appendTS(api.apiurl),
+									data:{"data": "cacel_upgrade"} ,
+									success:function(data){;}                            
+								});
+                                window.location.assign("a_fu.shtml");
+                            }
+                        }else {
+			    alert(message[currentlang].availablefilealert);
+                            window.location.assign("a_fu.shtml");
+                        }
+                    
+                    if(typeof(data.error) != 'undefined')
+                    {
+                        if(data.error != '')
+                        {
+                            alert(data.error);
+                        }else
+                        {
+                            alert(data.msg);
+                        }
+                    }
+                },
+                error: function (data, status, e)
+                {
+                //    alert("error");
+                    alert(data);
+                    alert(e);
+                }
+            }
+        )
+        
+        return false;
+
+    }
+
+	function check_upgrade()
+    {
+		$("#loadingpic").css("display","");
+		//alert(message[currentlang].loadingmsg);
+            $.ajax({ 
+            	    url: appendTS(api.apiurl),
+            	    data:{"data": "autoupgradeFW"} , 
+            	    type:"GET",
+            	    timeout:60000,
+            	    success: function(data) {
+					$("#loadingpic").css("display","none");
+			 //alert(data);
+			 if (data=="success!")
+				{
+					if (confirm(message[currentlang].dlfw))//"File downloaded success! Continue to upgrade?" 
+					{
+						$.ajax({
+							url:"/cgi-bin/sysupdate?data=yes",
+							date:null,
+							dataType:"text",
+							success:function(data){;}                            
+						});
+						i=setInterval('count()',180);
+					}else {
+						$.ajax({
+							url:appendTS(api.apiurl),
+							data:{"data": "cacel_upgrade"} ,
+							success:function(data){;}                            
+						});
+						window.location.assign("a_fu.shtml");
+					}
+				}else {
+					alert(message[currentlang].autoupgrade_fail);
+					$.ajax({
+						url:appendTS(api.apiurl),
+						data:{"data": "cacel_upgrade"} ,
+						success:function(data){;}                            
+					});
+					window.location.assign("a_fu.shtml");
+				}
+            	},
+            	error: function (xmlHttpRequest, error) {  
+            		console.info(xmlHttpRequest, error); 
+            	}
+            	
+        });
+		return false;
+    }
+    
+</script>
+</head>
+<body>
+	
+    <div class="div_content" id="DivContent">
+    <div class="div_header">
+        <div class="div_container">
+            <div style="float: left;" class="title_back">
+                <a href="index.shtml" lang="back" class="btn_back"></a>
+            </div>
+            <div style="float: left;" class="title_text">
+            </div>
+            <div style="clear: both;">
+            </div>
+        </div>
+		<div id="div_warn" style="display:none;">
+		<strong style="color:rgb(226, 108, 29);font-family:微软雅黑;" lang="warning">WARNINGS</strong>
+		</div>
+    </div>
+    <div class="div_center">
+		<div id="div_bar" style="display:none;width:401px;margin: 0 auto;text-align:left;font-family:微软雅黑;">
+			<div style="margin-top:-16px;">
+				<ul style="padding-top:20px;">
+					<li lang="alert8">Do not power off the device now.<br></li>
+					<li lang="alert7">Please wait and keep an eye on your device.<br> 
+					One LED should blink during upgrading.</li>
+				</ul>
+					
+			<p>
+			</div>
+			<div id="bar">
+			</div>
+		</div>
+        <div class="div_container">
+            <input type="hidden" id="errStr" name=""/>
+                <div id="file_wrapper">
+                    <div id="file_faker">
+                        <input id="text_box"/>
+                        <div id="file_btn" lang="browse"></div>
+                        <!-- 隐藏真正的上传 -->
+                    </div>
+                <input type="file"  id="fileToUpload" name="fileToUpload" size="20"/>
+                </div>
+            <p>
+                <a style="cursor: pointer" class="btn" onclick="return ajaxFileUpload();" lang="upgrade"></a>
+            </p>
+			<p>
+                <a style="cursor: pointer" class="btn" onclick="return check_upgrade();" lang="autoupgrade"></a>
+            </p>
+            <p>
+                <font id="notice" color="blue" lang="notice" class="div_sp_text smfont"></font>
+            </p>
+			
+        </div>
+    </div>
+    <div class="div_bottom"></div>
+	<div id="loadingpic" style="margin-top:30px;display:none;"><img src="loading.gif" width="60px"  height="60px" /></div>
+</div>
+    
+</body>
+</html>

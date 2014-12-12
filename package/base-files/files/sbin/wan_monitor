@@ -1,0 +1,52 @@
+#########################################################################
+# File Name: wan_monitor
+# Author: yuehb
+# mail: yuehb@bellnett.com
+# Created Time: Fri 17 Oct 2014 01:36:58 PM CST
+#########################################################################
+#!/bin/sh
+
+KEEPALIVE_SERVER=$1
+KEEPALIVE_SERVER2=$2
+INTERVAL=5
+FAIL_COUNTER=0
+
+[ -z $KEEPALIVE_SERVER  ] && KEEPALIVE_SERVER="www.baidu.com"
+[ -z $KEEPALIVE_SERVER2  ] && KEEPALIVE_SERVER2="www.google.com"
+
+echo  $KEEPALIVE_SERVER $KEEPALIVE_SERVER2
+
+while true
+do
+COUNT=$( ping $KEEPALIVE_SERVER -c 5  -q 2>/dev/null|grep "received"|cut -d ',' -f 2|cut -c 2-2 )
+
+if [ "${COUNT}" \> "0" ];then
+	FAIL_COUNTER=0
+	#echo $COUNT received 
+else
+	COUNT2=$( ping $KEEPALIVE_SERVER2 -c 5  -q  2>/dev/null|grep "received"|cut -d ',' -f 2|cut -c 2-2 )
+	if [ "${COUNT2}" \> "0" ];then
+		FAIL_COUNTER=0
+		#echo $COUNT2 received 
+	else
+		#((FAIL_COUNTER++))
+		FAIL_COUNTER=`expr $FAIL_COUNTER + 1`
+		#echo "no packets received"
+	fi
+fi
+
+#echo "FAIL_COUNTER="$FAIL_COUNTER
+if [ "${FAIL_COUNTER}" -gt  3 ];then
+	#FAIL_COUNTER=0
+	#buleled blink
+	echo timer > /sys/class/leds/buleled/trigger  
+	echo 400  > /sys/class/leds/buleled/delay_on
+	echo 400  > /sys/class/leds/buleled/delay_off
+else
+	#buleled on
+	echo none > /sys/class/leds/buleled/trigger
+	echo 1 > /sys/class/leds/buleled/brightness
+fi
+
+sleep $INTERVAL
+done

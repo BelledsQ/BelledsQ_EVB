@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 bellnett
+
+START=50
+SERVICE_DAEMONIZE=1
+
+RFGATEWAY_BIN="/usr/sbin/rfgateway"
+
+start() {
+	service_start $RFGATEWAY_BIN &
+}
+
+stop() {
+	service_stop $RFGATEWAY_BIN
+}

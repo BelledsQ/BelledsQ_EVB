@@ -1,0 +1,23 @@
+#!/bin/sh
+[ -z "$1" ] && echo "Error: should be run by udhcpc" && exit 1
+
+setup_interface () {
+	echo ip:$ip > /usr/web/cgi-bin/dhcpinfo
+	echo subnet:$subnet >> /usr/web/cgi-bin/dhcpinfo
+	echo gateway:$router >> /usr/web/cgi-bin/dhcpinfo
+	echo dns:$dns >> /usr/web/cgi-bin/dhcpinfo
+}
+
+deconfig_interface() {
+	:
+}
+
+case "$1" in
+	deconfig)
+		deconfig_interface
+	;;
+	renew|bound)
+		setup_interface
+	;;
+esac
+

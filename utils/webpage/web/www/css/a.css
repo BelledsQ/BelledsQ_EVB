@@ -1,0 +1,88 @@
+﻿body{TEXT-ALIGN:center;background:#ffffff url(images/bg.png) repeat-x top center;margin:0px;padding:0px;}
+.div_content{border:0;width:401px;margin:40px auto;}
+.div_header{background:url(/graphics/box_bg_top.png) no-repeat;width:401px;padding-top:42px;height:53px;}
+.div_center{background:url(/graphics/box_bg_center.png) repeat-y;width:401px;padding:0px 0px 10px 0px;}
+.div_bottom{background:url(/graphics/box_bg_bottom.png) no-repeat; width:401px; height:18px;}
+.div_container{width:332px;margin:auto;}
+.div_row{background:url(/graphics/iPad_Grey_ColorBar.png) no-repeat;width:332px;height:45px;margin-left:0px;text-align:left;position:relative;}
+.item_row{background:url(/graphics/item_bg.png) no-repeat;width:260px;height:45px;}
+.div_row_text{border:0;float:left;width:90px;height:45px;line-height:45px;margin-left:11px;font-family:"微软雅黑",Times,serif;font-size:14px;color:#515151;white-space:nowrap;}
+.div_row_control{float:left;width:180px;padding:10px;text-align:left;padding-left:3px;font-family:"Times New Roman",Times,serif;font-size:16px;color:rgb(16,176,255);white-space:nowrap;}
+.div_row_control input[type="text"],.div_row_control input[type="password"]{height:20px;line-height:20px;width:211px;font-family:微软雅黑;}
+.div_row_control select{height:26px;line-height:26px;width:216px;font-family:微软雅黑;}  
+  
+.div_row_text_right{border:0;float:right;width:160px;margin-right:11px;padding:12px 0px;font-family:"Times New Roman",Times,serif;font-size:16px;color:#10b0ff;text-align:right;white-space:nowrap;}
+.div_row_image{border:0;padding:9px 0px;}
+.div_spin_image{position:relative;top:0px;text-align:right;}
+.div_row_tag{border:0;text-align:left;margin-left:0px;font-family:"Times New Roman",Times,serif;font-size:16px;font-weight:bold;color:#10b0ff;}
+.image_middle{border:0;vertical-align:middle;position:relative;left:10px;}
+.image_middleN10{margin:auto;}
+.text_button{border:0;text-align:left;margin-left:11px;padding:12px 0px;white-space:nowrap;background-color:transparent;font-family:"Times New Roman",Times,serif;font-size:16px;color:#10b0ff;}
+.combobox_row{border:0;position:relative;top:10px;left:4px;width:294px;font-family:"Times New Roman",Times,serif;font-size:16px;color:#000000;background-color:transparent;}
+.combobox_right{border:0;text-align:right;position:relative;z-index:1;top:10px;font-family:"Times New Roman",Times,serif;font-size:16px;color:#10b0ff;background-color:#EAEAEA;}
+.div_combobox_text{border:0;text-align:right;padding:12px 0px;width:180px;position:absolute;white-space:nowrap;background-color:transparent;font-family:"Times New Roman",Times,serif;font-size:16px;color:#000000;}
+.div_bottom_text{position:relative;padding:40px 0px;text-align:center;font-size:13px;font-weight:bold;font-family:"Times New Roman",Times,serif;color:#10b0ff;}
+.btn{background:url(/graphics/iPad_Grey_ColorBar.png) no-repeat;display:inline-block;height:45px;line-height:45px;width:332px;color:#515151;font-size:20px;font-family:微软雅黑;text-decoration:none;font-weight:bold;cursor:pointer;text-align:center;}
+div.box
+{
+    background:url(/graphics/box_bg_3.png);
+    width:395px;
+    margin:40px auto 0px auto;
+    padding:1px;
+}
+div.title_back
+{
+    background:url(/graphics/btn_back.png) no-repeat;
+    width:60px;
+    height:38px;
+    margin-left:3px;
+}
+.btn_back
+{
+    height:38px;
+    line-height:38px;
+    padding-left:14px;
+    display:block;
+    color:#fff;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:bold;
+    font-family:微软雅黑;
+}
+div.title_done
+{
+    background:url(/graphics/btn_done.png) no-repeat;
+    width:60px;
+    height:38px;
+}
+.btn_done
+{
+    height:38px;
+    line-height:38px;
+    display:block;
+    color:#fff;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:bold;
+    font-family:微软雅黑;
+}
+div.title_text
+{
+    width:206px;
+    text-align:center;
+    height:38px;
+    line-height:38px;
+    font-size:18px;
+    font-weight:bold;
+    color:#515151;
+    font-family:微软雅黑  Bold;
+}
+.div_sp_text
+{
+    color:#515151;
+    font-family:微软雅黑;
+}
+.smfont
+{
+    font-size:13px;
+}

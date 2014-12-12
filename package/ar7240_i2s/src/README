@@ -1,0 +1,25 @@
+Building audio driver
+---------------------
+
+For Virian:
+ar7240_i2s is not built/included by default.
+Makefile.ar7240_emu needs to be modified for the audio driver to be built and included as part of fs.
+To build - just add "i2s_build" to 'Makefile.ar7240_emu'
+
+For Wasp:
+ath_i2s is not built/included by default.
+Makefile.db12x needs to be modified for the audio driver to be built and included as part of fs.
+To build - just add "i2s_build" to 'Makefile.db12x' and add "CONFIG_I2S=1" to the make command.
+
+Playing
+-------
+
+For Virian:
+insmod /lib/modules/2.6.15/i2s/ar7240_i2s.ko
+For Wasp:
+insmod /lib/modules/2.6.31/i2s/ath_i2s.ko
+
+mknod /dev/i2s c 253 0
+
+And refer to README of "../../../apps/athplay"
+

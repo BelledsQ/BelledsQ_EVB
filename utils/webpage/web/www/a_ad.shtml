@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/a.css">
+    <meta http-equiv="”pragma”" content="”no-cache”">
+    <meta http-equiv="”expires”" content="”-1″">
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.xml2json.js"></script>
+    <script type="text/javascript" src="js/Netfeng.Tab.js"></script>
+    <script type="text/javascript" src="js/langPrefix.js"></script>
+    <script type="text/javascript" src="js/tool.js"></script>
+    <script type="text/javascript">
+        var currentIndex = 0;
+        var switchimg = ["/graphics/iPad_AutoScan_Btn_ON.png","/graphics/iPad_AutoScan_Btn_OFF.png"]
+        var theData = [{ name: "SAMBA", loaded: false, api: api.samba, data: null, fields: { "user": "#txtUsername", "password": "#txtPassword", "port": "#txtPort", "path": "#txtPath", "status": "#imgStatus", "anonymous_en": "#imgAnyStatus"} },
+                        { name: "FTP", loaded: false, api: api.ftp, data: null, fields: { "user": "#txtUsername2", "password": "#txtPassword2", "port": "#txtPort2","path":"#txtPath2", "status": "#imgStatus2", "anonymous_en": "#imgAnyStatus2"} },
+                        { name: "DMS", loaded: false, api: api.dms, data: null, fields: { "name": "#txtName3", "path": "#txtPath3", "status": "#imgStatus3"} },
+                        { name: "WebDAV", loaded: false, api: api.webdav, data: null, fields: { "user": "#txtUsername4", "password": "#txtPassword4", "port": "#txtPort4", "path": "#txtPath4", "status": "#imgStatus4"}}]
+        //
+        function binddata(data) {
+            var obj = (data && data[theData[currentIndex]["name"]]) || theData[currentIndex].data;
+            var fields = theData[currentIndex].fields
+            //
+            for (var key in fields) {
+                if (key == "status" || key == "anonymous_en") {
+                    $(fields[key]).attr("src", switchimg[obj[key] == "ON" ? 0 : 1]).attr("val", obj[key]);
+                } else {
+                    $(fields[key]).val(HtmlDecode(obj[key]));
+                }  
+            }
+        }
+        $(function () {
+            //
+            langPrefix();
+            //            
+            if (currentlang == "zh") {
+                switchimg = ["/graphics/iPad_AutoScan_Btn_ON_CN.png", "/graphics/iPad_AutoScan_Btn_OFF_CN.png"]
+            }
+            document.title = message[currentlang].device;
+            //
+            Loading(message[currentlang].loadingmsg);
+            $.get(appendTS(api.apiurl), { data: api.advance }, function (xml) {
+                //var data = $.xml2json(data);
+                var result = xml2object(xml);
+                //
+                if (result == undefined) return;
+                if (result.Return.status != "true") {
+                    alert(result.Return["#text"] || result.Return.toString());
+                    return;
+                }
+                //
+                for (var i = 0, j = theData.length; i < j; i++) {
+                    //
+                    theData[i].data = result[theData[i]["name"]];
+                    //
+                    if (theData[i].data["enable"] == "OFF") {
+                        $("ul.tab>li[idx=" + i + "]").remove(); //.removeClass("item");
+                        $("div.tab_body[idx=" + i + "]").remove();
+                    } else {
+                        $("ul.tab>li[idx=" + i + "]").get(0).style.visibility="visible";
+                    }
+                }
+                //
+                binddata(result);
+                Loaded();
+                //
+                var tabs = $.tabs({
+                    selector: "#DivContent",
+                    selected: Request("index", 0),
+                    tabsSelector: " ul.tab>li.item",
+                    panelsSelector: " div.tab_body",
+                    click: function (idx, instance) {
+                        currentIndex = $("ul.tab > li.item:eq(" + idx + ")").attr("idx");
+                        if (theData[currentIndex].loaded) return;
+                        //
+                        binddata();
+                        theData[currentIndex].loaded = true;
+                    }
+                });
+            });
+            $("img.status").click(function () {
+                var This = $(this);
+                This.attr("src", This.attr("val") == "OFF" ? switchimg[0] : switchimg[1]).attr("val", This.attr("val") == "ON" ? "OFF" : "ON");
+            });
+        });
+        function onDone() {
+            if (!theData[currentIndex].loaded) {
+                //alert("请在数据加载完成后再执行此动作！");
+                return;
+            }
+            var fields = theData[currentIndex].fields;
+            var postdata = theData[currentIndex].data || {};
+            for (var key in fields) {
+                if (key == "status" || key == "anonymous_en") continue;
+                if ($(fields[key]).val().trim() == "") {
+                    var title = $(fields[key]).closest("div").prev("div.div_row_text").text();
+                    alert(title + message[currentlang].emptyalert);
+                    return;
+                }
+                if (key == "password" && $(fields[key]).val().trim().Length() > 32) {
+                    alert(message[currentlang].passwordlengthalert);
+                    return false;
+                }
+            }
+            for (var key in fields) {
+                if (key == "path") continue;
+                if (key == "status" || key == "anonymous_en") {
+                    postdata[key] = $(fields[key]).attr("val").trim();
+                } else {
+                    postdata[key] = HtmlEncode($(fields[key]).val().trim());
+                }
+            }
+            if (postdata["status"] != undefined) postdata["enable"] = postdata["status"]
+            for (var k in postdata) {
+                if (k.charAt(0) != "@") {
+                    postdata["@" + k] = postdata[k];
+                    delete postdata[k];
+                }
+            }
+            var thedata = {};
+            thedata[theData[currentIndex]["name"]] = postdata;
+            //
+            var xml = json2xml({ "setSysInfo": thedata });
+            //
+            Loading("");
+            //
+            $.ajax({ url: appendTS(api.apiurl + "?data=" + escape(xml)),
+                type: "POST",
+                data: { data: xml },
+                contentType: "application/x-www-form-urlencoded;",
+                success: function (result) {
+                    //
+                    result = $.xml2json(result);
+                    if (result.Return.status != "true") { Loaded(); alert(result.Return.toString()); }
+                    /*
+                    Loading(message[currentlang].savingconfig, result.Return.delay, function () {
+                        Loaded();
+                        var url = window.location.href;
+                        //
+                        if (url.indexOf("index=") == -1) url = paddingUrl(url) + "&index=" + index;
+                        else url = url.replace(/(index=)(\d+)/, '$1' + currentIndex);
+                        window.location.href = url; 
+                    });
+                    */
+                }
+            });
+            //bugcode
+            Loading(message[currentlang].savingconfig, 5, function () {
+                Loaded();
+                var url = window.location.href;
+                //
+                if (url.indexOf("index=") == -1) url = paddingUrl(url) + "&index=" + index;
+                else url = url.replace(/(index=)(\d+)/, '$1' + currentIndex);
+                window.location.href = url; 
+            });
+            return false;
+        }
+    </script>
+    <style type="text/css">
+        table.fixtb tbody td.control>input,table.fixtb tbody td.control>select
+        {
+            width:180px;
+        }
+        .dtab{margin:0px;display:block;width:332px; overflow:hidden;}
+        .dtab ul{float:left;margin:0px 0px 0px 0px;padding:0px;}
+        .dtab li{float:left;list-style:none;background:url(/graphics/tab_normal.png) no-repeat;height:40px;width:80px;margin-right:1px;}
+        .dtab li:hover{background-color: #C2CCDB;}
+        .dtab li.selected{background:url(/graphics/tab_active.png) no-repeat;color:White;}
+        .dtab .normal a {float:left;width:100%;}
+        .dtab .normal a span{float:left;height:40px;line-height:40px;width:100%;text-align:center;color:#0066B4;font-weight:bold;cursor:pointer;}
+        .dbody
+        {
+            margin-top: 5px;
+            /*width: 100%;
+            border: solid 1px gray;
+            background-color: #CDDBEE;
+            padding:15px;*/
+        }
+    </style>
+</head>
+<body>
+    <form action="">
+    <div class="div_content" id="DivContent">
+        <div class="div_header">
+            <div class="div_container">
+                <div style="float: left;" class="title_back">
+                    <a href="index.shtml" lang="back" class="btn_back"></a>
+                </div>
+                <div style="float: left;" class="title_text" lang="advancedsetting">
+                </div>
+                <div style="float: left;" class="title_done">
+                    <a href="javascript:;" onclick="return onDone();" lang="done" class="btn_done" />
+                    </a></div>
+                <div style="clear: both;">
+                </div>
+            </div>
+        </div>
+        <div class="div_center">
+            <div class="div_container">
+        <!---->
+        <div class="dtab">
+            <ul class="tab">
+                <li class="item normal" idx="0" style="visibility :hidden;"><a><span>Samba</span></a></li>
+                <li class="item normal" idx="1" style="visibility :hidden;"><a><span>FTP</span></a></li>
+                <li class="item normal" idx="2" style="visibility :hidden;"><a><span>DMS</span></a></li>
+                <li class="item normal" idx="3" style="visibility :hidden;"><a><span>WebDAV</span></a></li>
+            </ul>
+        </div>
+        <div class="dbody">            
+            <div class="tab_body" id="div1" idx="0">
+                <!---->
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="username"></div>
+                    <div class="div_row_control">
+                        <input id="txtUsername" name="txtUsername" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="password"></div>
+                    <div class="div_row_control">
+                        <input id="txtPassword" name="txtPassword" value="" type="password" validate="required,length[_50]"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="port"></div>
+                    <div class="div_row_control">
+                        <input id="txtPort" name="txtPort" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="path"></div>
+                    <div class="div_row_control">
+                        <input id="txtPath" name="txtPath" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="status"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgStatus" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="anonymousstatus" style="line-height:18px;padding-top:4px;"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgAnyStatus" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="tab_body" id="div2" idx="1">
+                <!---->
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="username"></div>
+                    <div class="div_row_control">
+                        <input id="txtUsername2" name="txtUsername2" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="password"></div>
+                    <div class="div_row_control">
+                        <input id="txtPassword2" name="txtPassword2" value="" type="password" validate="required,length[_50]"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="port"></div>
+                    <div class="div_row_control">
+                        <input id="txtPort2" name="txtPort2" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="path"></div>
+                    <div class="div_row_control">
+                        <input id="txtPath2" name="txtPath2" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="status"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgStatus2" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="anonymousstatus" style="line-height:18px;padding-top:4px;"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgAnyStatus2" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="tab_body" id="div3" idx="2">
+                <!---->
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="devicename"></div>
+                    <div class="div_row_control">
+                        <input id="txtName3" name="txtName3" value="" type="text"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="path"></div>
+                    <div class="div_row_control">
+                        <input id="txtPath3" name="txtPath3" value="" type="text" readonly="readonly" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="status"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgStatus3" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="tab_body" id="div4" idx="3">
+                <!---->
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="username"></div>
+                    <div class="div_row_control">
+                        <input id="txtUsername4" name="txtUsername4" value="" type="text" readonly="readonly" style="background-color: #C8C8C8;" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="password"></div>
+                    <div class="div_row_control">
+                        <input id="txtPassword4" name="txtPassword4" value="" type="password" validate="required,length[_50]"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="port"></div>
+                    <div class="div_row_control">
+                        <input id="txtPort4" name="txtPort4" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="path"></div>
+                    <div class="div_row_control">
+                        <input id="txtPath4" name="txtPath4" value="" type="text" readonly="readonly" style="background-color: #C8C8C8" onfocus="this.blur();"/>
+                    </div>
+                </div>
+                <p/>
+                <div class="div_row">
+                    <div class="div_row_text div_sp_text smfont" lang="status"></div>
+                    <div class="div_row_control" style="float: left; height: 27px; cursor: pointer; padding-left: 0px;">
+                        <img id="imgStatus4" class="status" src="graphics/iPad_AutoScan_Btn_OFF.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+            </div>
+        </div>
+
+        <div class="div_bottom">
+        </div>
+    </div>
+    </form>
+</body>
+</html>

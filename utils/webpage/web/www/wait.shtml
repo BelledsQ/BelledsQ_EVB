@@ -1,0 +1,95 @@
+﻿<meta name="viewport" content="width=device-width, maximum-scale=1.0">
+﻿<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/css/a.css">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/langPrefix.js"></script>
+<script language="JavaScript" type="text/javascript">
+	var lap=20;
+	var idx=1;//0--setting 1--network connection
+	    function getString(strname)  
+    {   
+	var hrefstr,pos,parastr,para,tempstr;   
+	hrefstr = window.location.href;   
+	pos = hrefstr.indexOf("?"); 
+	parastr = hrefstr.substring(pos+1);  
+	/*if(pos>0){
+      	  document.write("<br>????:"+parastr);
+	  }
+        else
+        {document.write("???");}   */
+	para = parastr.split("&");   
+	tempstr="";   
+	for(i=0;i<para.length;i++)
+	{
+	    tempstr = para[i];
+ 	    pos = tempstr.indexOf("=");
+  	    if(tempstr.substring(0,pos) == strname)
+  	    {     return tempstr.substring(pos+1);     }
+  	 }
+  	 return null;  
+    }
+	function init()
+	{
+	langPrefix();
+	var str = getString("parent"); //top.document.referrer;
+	//alert(str);
+	if(str=="a_settings")
+	{lap =20; idx=0;}
+	else if(str=="a_join_network")//a_join_network
+	{lap=40;idx=1;}
+	else if(str=="a_stm")
+	{lap=10;idx=2;}
+	else if(str=="a_fu")
+	{
+		lap =160; idx=3;
+		document.getElementById("tip").value=message[currentlang].alert8;
+	//	alert(eval('message.'+currentlang+'.alert8'));// 
+	}
+	DoWait();		
+	}
+    function DisplayWait()
+    {
+	document.getElementById("kwait").value=eval('message.'+currentlang+'.wait')+lap+" s";//
+	lap=lap-1;
+	if (lap <= 0){
+		if(idx==1){//network connection
+			window.location.replace("a_wait.shtml");
+		}else if(idx==0) {//settings
+			alert(eval('message.'+currentlang+'.alert4'));
+			window.location.replace("index.shtml");
+		}else if(idx==2){//wan
+			alert(eval('message.'+currentlang+'.alert5'));
+			window.location.replace("index.shtml");
+		}else {
+			alert(eval('message.'+currentlang+'.alert4'));
+			window.location.replace("index.shtml");
+		}
+      }
+      else
+        setTimeout("DoWait()",1000);
+    }
+
+    function DoWait()
+    {
+       DisplayWait();
+    }
+</script>
+</head>
+<body onload="init();">
+	<div id="DivInput0"  align="center">
+	<div class="list_left2">
+
+	<p><!img style="border:0;" src="graphics/Wait.gif" />
+		<input type="button" id="tip" value="ni" style="height: 50px; width: 90%;font-size: 20px; color:#FFFFFF; background-color:Transparent;border:0" onclick="" />
+	</p>
+	<p><input type="button" id="kwait" value="Please Wait..." style="height: 50px; width: 90%;font-size: 20px; color:#FFFFFF; background-color:Transparent;border:0" onclick="" /></p>
+
+	</div>	
+	</div>
+</body>
+</html>

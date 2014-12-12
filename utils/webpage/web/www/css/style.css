@@ -1,0 +1,59 @@
+BODY {
+	FONT: 18px/1.8em Arial, Helvetica, sans-serif,"Microsoft YaHei"; COLOR: #000000;background:#ffffff url(/css/images/bg.png) repeat-x top center;
+}
+H1 {
+	BORDER-BOTTOM: 0px; PADDING-BOTTOM: 2px; PADDING-LEFT: 0px; PADDING-RIGHT: 10px; FONT-SIZE: 110%; PADDING-TOP: 10px
+}
+HR {
+	BACKGROUND-COLOR: #385D8A; MARGIN: 0px; HEIGHT: 1px; COLOR: #385D8A
+}
+HR {
+	DISPLAY: none
+}
+.main {
+	PADDING-BOTTOM: 10px; MARGIN: 0px auto; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+IMG {
+	MARGIN-BOTTOM: 0px; VERTICAL-ALIGN: middle
+}
+TABLE {
+	MARGIN-TOP: 0px; WIDTH: 100%; VERTICAL-ALIGN: middle;FONT-FAMILY:"微软雅黑";
+}
+TABLE TD {
+	PADDING-BOTTOM: 0px; LINE-HEIGHT: 3em; PADDING-LEFT: 10px; PADDING-RIGHT: 10px; VERTICAL-ALIGN: middle; PADDING-TOP: 0px;
+}
+UNKNOWN {
+	TEXT-ALIGN: right
+}
+UNKNOWN {
+	WIDTH: 16px; PADDING-RIGHT: 0px
+}
+UNKNOWN {
+	PADDING-LEFT: 20px; WIDTH: 600px
+}
+UNKNOWN {
+	WIDTH: 16px; PADDING-RIGHT: 0px
+}
+
+TH A {
+	BACKGROUND: url(images/ascending.png) no-repeat right center; COLOR: #fff; FONT-WEIGHT: normal; TEXT-DECORATION: none
+}
+
+TABLE TD {
+	BORDER-BOTTOM: #fff 1px solid; COLOR: #000000;WORD-BREAK:BREAK-ALL;
+}
+TD A {
+	DISPLAY: block; COLOR: #000000; TEXT-DECORATION: none
+}
+UNKNOWN {
+	WIDTH: 90%
+}
+UNKNOWN {
+	PADDING-BOTTOM: 15px; VERTICAL-ALIGN: bottom
+}
+.footer {
+	MARGIN-TOP: 10px; COLOR: #999;padding-left:10px;
+}
+.footer A {
+	COLOR: #999; TEXT-DECORATION: none
+}

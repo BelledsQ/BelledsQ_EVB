@@ -1,0 +1,32 @@
+#!/bin/sh
+. /lib/config/uci.sh
+
+min0=0
+min1=1
+
+
+echo -n "led_status;" > /tmp/led
+echo -n $(uci_get devfile.dev.count) >> /tmp/led
+min=0
+while [ $min -lt $(uci_get devfile.dev.count) ]
+do
+		echo -n ";" >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].dev_sn) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].dev_title) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].led_red) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].led_green) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].led_blue) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].led_light) >> /tmp/led
+		echo -n "," >> /tmp/led
+		echo -n $(uci_get devfile.@devCtrl[$min].dev_status) >> /tmp/led
+                echo -n "," >> /tmp/led                                         
+                echo -n $(uci_get devfile.@devCtrl[$min].online) >> /tmp/led    
+                echo -n "," >> /tmp/led                                     
+                echo -n $(uci_get devfile.@devCtrl[$min].online_total) >> /tmp/led
+        min=`expr $min + 1`
+done  

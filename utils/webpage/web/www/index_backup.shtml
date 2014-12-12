@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<html>
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/css/a.css" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <meta http-equiv="”pragma”" content="”no-cache”" />
+    <meta http-equiv="”expires”" content="”-1″" />
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.xml2json.js"></script>
+    <script language="javascript" src="js/langPrefix.js"></script>
+    <script language="javascript" src="js/tool.js"></script>
+    <script language="JavaScript" type="text/javascript">
+
+        function LoadScript(url) {
+            window.location.assign(url);
+        }
+        function bindData(data) {
+            if (data == undefined) return;
+            if (data.Return.status != "true") {
+                alert(data.Return["#text"] || data.Return.toString());
+                return;
+            }
+            //
+            var version = data.Version;
+            //
+            $("#divVersion").html(version.fw2);
+            //            
+        }
+        $(function () {
+            $.get(appendTS(api.apiurl), { data: api.version }, function (data) {
+                var data = $.xml2json(data);
+                bindData(data);
+                Loaded();
+            });
+            //
+            document.title = message[currentlang].device;
+            langPrefix();
+            if ($("body").width() <= 480) {
+                $("div.div_content").width("100%");
+            }
+        });
+</script>
+<style type="text/css">
+#topmenucontainer ul 
+{
+    width:332px;
+    font-weight: bold;
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+}
+#topmenucontainer li 
+{
+    background: url(/graphics/iPad_Grey_ColorBar.png) repeat-x;
+    margin: 5px 0px 0px 0px;
+    vertical-align: middle;
+    height:45px;
+    cursor:pointer;
+    font-family:微软雅黑 bold;
+}
+#topmenucontainer li a
+{
+    text-decoration:none;
+    display:block;
+    height:45px;
+    line-height:45px;
+    white-space:nowrap;
+    color:RGB(77,77,77);
+}
+#topmenucontainer li:hover {
+    background:url(/graphics/iPad_Grey_ColorBar-2.png) repeat-x 50% 0%!important;
+}
+#topmenucontainer li:hover a {
+    color:White;
+}
+
+</style>
+</head>
+<body>
+    <div style="float:right;width:140px;background:#D3DEEE;text-align:center;">
+        <table>
+            <tr>
+                <td style="text-align: right" lang="zh">
+                    <a style="cursor: pointer; text-align: right;" onclick="setLanguage('zh');">
+                    <font id="lang" class="langs div_sp_text">中文</font></a>
+                </td>
+                <td>
+                    <a style="cursor: pointer" onclick="setLanguage('en')">
+                    <font id="lang" class="langs div_sp_text">|&nbsp;English</font></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="clear:both;"></div>
+        <div id="topmenucontainer" class="div_content">
+            <ul id="topmenu">
+                <!--li><a class="tab" href="/" lang="file"></a></li-->
+                <li><a class="tab" href="a_advanced.shtml" lang="advancedsetting"></a></li>
+                <li><a class="tab" href="a_settings.shtml" lang="setting"></a></li>
+                <li><a class="tab" href="a_network_connections.shtml" lang="networkconnect"></a></li>
+                <li><a class="tab" href="a_fu.shtml" lang="upgrade"></a></li>
+            </ul>
+        </div>
+    <p></p>
+    <center>
+        <div style="width:250px;text-align:center;">
+        <div style="float:left;padding-left:35px;" lang="fw" class="div_sp_text"></div>
+        <div id="divVersion" style="float:left;" class="div_sp_text"></div>
+        </div>
+    </center>
+</body>
+</html>

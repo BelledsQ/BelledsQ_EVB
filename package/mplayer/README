@@ -1,0 +1,46 @@
+1. prepare your video files for Ben:
+
+Use ffmpeg2theora or ffmpeg with vp8, vorbis, mkv.
+
+When using theora, try to use a video width and height that are a multiple of
+16.  Currently theora decoding displays strange borders, if size is not a
+multiple of 16.
+
+Try to use an audio sampling rate of 44100 for the vorbis audio.  If the
+automatic resampling of the alsa OSS emulation is triggered, quality degrades
+a lot.  Alternatively use 'mplayer -af resample=44100:1:1' on playback.
+
+For encoding try to use libtheora 1.2 ("ptalarbvorm") which improves visual
+qality a lot compared to previous versions.  Always encode with
+constant-quality *not* giving a bitrate target.
+
+Here's an example encoding command:
+
+ffmpeg2theora  -o output.ogv input.avi \
+	       -v8 -x320 -y176 \
+	       -a0 --channels 2  --samplerate 44100 
+
+Yielding a pretty high visual quality (-v8 i.e. "80%").  Use -v6 for
+approximately half the bitrate with moderate quality.
+
+2. play your files with Ben:
+
+mplayer output.ogv
+
+In case sample rate doesn't match 48000 the default will be to perform quick
+resampling, introducing noticeable quality degradation.  Add -af
+resample=44100:0:1 to improve audio quality at the cost of a few percent of
+CPU usage.
+
+(Assumptions:
+
+the following options should be set in your ~/.mplayer/config:
+
+volume=10
+vo=cvidix
+screenw=320
+screenh=240
+fs=1
+ac=tremor
+quiet=1
+)
