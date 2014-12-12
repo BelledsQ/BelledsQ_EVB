@@ -1,0 +1,95 @@
+10
+
+dir
+339
+svn://192.168.3.252/mb8800/trunk/feeds/luci
+svn://192.168.3.252/mb8800
+
+
+
+2014-06-11T01:05:39.731625Z
+21
+wangping
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5c2750f7-5433-d441-9e29-4b9704d8791b
+
+freifunk-common
+dir
+
+freifunk-gwcheck
+dir
+
+freifunk-p2pblock
+dir
+
+community-profiles
+dir
+
+freifunk-mapupdate
+dir
+
+freifunk-watchdog
+dir
+
+remote-update
+dir
+
+freifunk-firewall
+dir
+
+luci
+dir
+
+meshwizard
+dir
+
+Makefile
+file
+
+
+
+
+2014-11-10T08:58:21.517196Z
+f1f6e420b1487ea32da1fc4d1c34a4f4
+2014-05-23T08:10:27.146000Z
+2
+wangping
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+60
+
+freifunk-policyrouting
+dir
+
