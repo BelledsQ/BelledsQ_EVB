@@ -1,0 +1,19 @@
+Source-Makefile: feeds/qs/sound/shairport/Makefile
+Package: shairport_new
+Version: 0.08
+Depends: +libc +USE_EGLIBC:librt +USE_EGLIBC:libpthread +libpthread +libopenssl +alsa-lib +libavahi-client
+Menu-Depends: 
+Provides: 
+Section: sound
+Category: Sound
+Title: ShairPort_new
+Maintainer: OpenWrt Developers Team <openwrt-devel@openwrt.org>
+Source: shairport_new-0.08-HEAD.tar.gz
+Type: ipkg
+Description:   ShairPort is server software that implements the RAOP protocol for
+  playback of music streamed from a compatible remote client.
+http://mafipulation.org/
+OpenWrt Developers Team <openwrt-devel@openwrt.org>
+@@
+
+

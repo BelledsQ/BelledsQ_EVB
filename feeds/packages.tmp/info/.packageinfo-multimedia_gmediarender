@@ -1,0 +1,20 @@
+Source-Makefile: feeds/packages/multimedia/gmediarender/Makefile
+Package: gmediarender
+Version: 2013-12-04-e2eb7852eebea95c69c79c43a1e4d5f52409930f
+Depends: +libc +USE_EGLIBC:librt +USE_EGLIBC:libpthread +gstreamer +glib2 +libupnp
+Menu-Depends: 
+Provides: 
+Build-Depends: !BUILD_NLS:libiconv !BUILD_NLS:libintl
+Section: multimedia
+Category: Multimedia
+Title: A Headless UPnP Renderer
+Maintainer: OpenWrt Developers Team <openwrt-devel@openwrt.org>
+Source: gmediarender-2013-12-04-e2eb7852eebea95c69c79c43a1e4d5f52409930f.tar.gz
+Type: ipkg
+Description:   gmediarender implements the server component that provides UPnP
+  controllers a means to render media content (audio, video and images)
+  from a UPnP media server.
+OpenWrt Developers Team <openwrt-devel@openwrt.org>
+@@
+
+
