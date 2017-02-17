@@ -21,5 +21,4 @@ belledAJ -s $(fts getsn) &
 }
 echo group:218 > /tmp/musicled
 shairport.pl -a $NAME -D  &
-rcmc -s rcm.belleds.com -m bellnet -n $(fts getsn)&
 exit 0

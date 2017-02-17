@@ -95,7 +95,6 @@ install_test:
 	cd $(utils_dir)/upnp/ && cp $(utils_dir)/upnp/grender-*.png $(target_utils_dir)/usr/sbin/
 
 	cp $(utils_dir)/mpg123/mpg123 $(target_utils_dir)/usr/sbin/mpg123
-	cp $(utils_dir)/rcmc/rcmc $(target_utils_dir)/usr/sbin/rcmc 
 	cd $(utils_dir)/bellmc && make && cp $(utils_dir)/bellmc/bellmc $(target_utils_dir)/usr/sbin/bellmc 
 	cd $(utils_dir)/bellmc2 && make && cp $(utils_dir)/bellmc/bellmc $(target_utils_dir)/usr/sbin/bellmc2 
 	cp $(utils_dir)/bellmc/startmc $(target_utils_dir)/usr/sbin/startmc
@@ -103,7 +102,6 @@ install_test:
 	cp -r $(utils_dir)/perl5 $(target_utils_dir)/usr/lib/perl5
 	cd $(utils_dir)/webpage && make && cp -r web   $(target_utils_dir)/usr
 	cp -r mplayer dl.sh  $(target_utils_dir)/usr/sbin
-	cp fts   $(target_utils_dir)/usr/sbin
 
 world: prepare $(target/stamp-compile) $(package/stamp-cleanup) $(package/stamp-compile) $(package/stamp-install) install_test $(package/stamp-rootfs-prepare) $(target/stamp-install) FORCE
 	$(_SINGLE)$(SUBMAKE) -r package/index
